@@ -1,4 +1,4 @@
-gcp_project      = "projeect-id"
+gcp_project      = "project-id"
 region          = "southamerica-east1"
 vpc_name        = "custom-vpc"
 subnet_name     = "custom-subnet"
