@@ -2,6 +2,11 @@ resource "google_project_service" "compute_api" {
   project                      = var.gcp_project
   service                      = "compute.googleapis.com"
   disable_dependent_services   = false
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 resource "google_project_service" "container_api" {
