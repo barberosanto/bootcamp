@@ -58,4 +58,11 @@ variable "cluster_alloy_id" {
   default     = "custom-cluster-alloy"
 }
 
+variable "cluster_alloy_cpu" {
+  description = "CPU do cluster alloydb"
+  type        = number
+  default     = 2
+  
+}
+
 

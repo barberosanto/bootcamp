@@ -59,7 +59,7 @@ module "alloy-db" {
   primary_instance = {
     instance_id       = "primary-instance",
     instance_type     = "PRIMARY",
-    machine_cpu_count = 64,
+    machine_cpu_count = var.cluster_alloy_cpu,
     database_flags    = {},
     display_name      = "alloydb-primary-instance"
   }
@@ -69,7 +69,7 @@ module "alloy-db" {
       instance_id        = "cluster-1-rr-1"
       display_name       = "cluster-1-rr-1"
       require_connectors = false
-      machine_cpu_count  = 128
+      machine_cpu_count  = var.cluster_alloy_cpu
       ssl_mode           = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
     }
   ]

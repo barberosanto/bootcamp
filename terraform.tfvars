@@ -8,3 +8,4 @@ machine_type    = "n2-standard-32"
 disk_size       = 1000
 node_count      = 5
 cluster_alloy_id = "custom-cluster-alloy"
+cluster_alloy_cpu = 64
