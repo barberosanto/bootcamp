@@ -35,4 +35,9 @@ resource "google_project_service" "servicenetworking_api" {
   service                      = "servicenetworking.googleapis.com"
   disable_dependent_services   = false
   depends_on                   = [google_project_service.compute_api, google_project_service.alloy_api]
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
