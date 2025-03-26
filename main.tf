@@ -26,20 +26,20 @@ module "gke" {
 }
 
 
-resource "google_compute_global_address" "alloydb_private_ip" {
-  project       = var.gcp_project
-  name          = "alloydb-private-ip"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
-  prefix_length = 16
-  network       = module.vpc.vpc_name  # Certifique-se que sua VPC está correta
-}
+# resource "google_compute_global_address" "alloydb_private_ip" {
+#   project       = var.gcp_project
+#   name          = "alloydb-private-ip"
+#   purpose       = "VPC_PEERING"
+#   address_type  = "INTERNAL"
+#   prefix_length = 16
+#   network       = module.vpc.vpc_name  # Certifique-se que sua VPC está correta
+# }
 
-resource "google_service_networking_connection" "alloydb_peering" {
-  network                 = module.vpc.vpc_name
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
-}
+# resource "google_service_networking_connection" "alloydb_peering" {
+#   network                 = module.vpc.vpc_name
+#   service                 = "servicenetworking.googleapis.com"
+#   reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
+# }
 
 # module "alloy-db" {
 #   source               = "GoogleCloudPlatform/alloy-db/google"
