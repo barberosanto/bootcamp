@@ -1,11 +1,9 @@
 gcp_project      = "project-id"
 region          = "southamerica-east1"
-vpc_name        = "custom-vpc3"
-subnet_name     = "custom-subnet"
-gke_cluster_name = "custom-gke-cluster"
-node_pool_name   = "custom-node-pool"
+vpc_name        = "bootcamp-vpc"
+subnet_name     = "bootcamp-subnet"
+gke_cluster_name = "bootcamp-gke-cluster"
+node_pool_name   = "bootcamp-node-pool"
 machine_type    = "n2-standard-32"
 disk_size       = 1000
-node_count      = 5
-cluster_alloy_id = "custom-cluster-alloy"
-cluster_alloy_cpu = 64
+node_count      = 2
