@@ -1,6 +1,6 @@
 gcp_project      = "project-id"
 region          = "southamerica-east1"
-vpc_name        = "custom-vpc"
+vpc_name        = "custom-vpc3"
 subnet_name     = "custom-subnet"
 gke_cluster_name = "custom-gke-cluster"
 node_pool_name   = "custom-node-pool"
