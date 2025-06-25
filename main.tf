@@ -1,15 +1,9 @@
-
-# module "api_enablement" {
-#   source      = "./modules/api_enablement"
-#   gcp_project = var.gcp_project
-# }
-
 module "vpc" {
-  #depends_on = [ module.api_enablement ]
   source       = "./modules/vpc"
   vpc_name     = var.vpc_name
   subnet_name  = var.subnet_name
   region       = var.region
+  gcp_project  = var.gcp_project
 }
 
 module "gke" {
@@ -23,6 +17,7 @@ module "gke" {
   vpc_name        = module.vpc.vpc_name
   subnet_name     = module.vpc.subnet_name
   region          = var.region
+  gcp_project     = var.gcp_project
 }
 
 

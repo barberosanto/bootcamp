@@ -12,3 +12,8 @@ variable "region" {
   description = "Região onde a VPC será criada"
   type        = string
 }
+
+variable "gcp_project" {
+  description = "ID do projeto no GCP"
+  type        = string
+}

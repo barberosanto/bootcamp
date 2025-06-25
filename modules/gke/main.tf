@@ -6,6 +6,7 @@ resource "google_container_cluster" "gke_cluster" {
   remove_default_node_pool = true
   initial_node_count       = 1
   deletion_protection = false
+  project = var.gcp_project
 }
 
 resource "google_container_node_pool" "node_pool" {
@@ -13,6 +14,7 @@ resource "google_container_node_pool" "node_pool" {
   cluster    = google_container_cluster.gke_cluster.name
   location   = var.region
   node_count = var.node_count
+  project    = var.gcp_project
 
   node_config {
     machine_type = var.machine_type

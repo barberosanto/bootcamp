@@ -1,9 +1,9 @@
-gcp_project      = "project-id"
+gcp_project      = "test-bootcamp-06-2025"
 region          = "southamerica-east1"
-vpc_name        = "bootcamp-vpc"
-subnet_name     = "bootcamp-subnet"
-gke_cluster_name = "bootcamp-gke-cluster"
-node_pool_name   = "bootcamp-node-pool"
+vpc_name        = "bootcampcustom-vpc"
+subnet_name     = "bootcampcustom-subnet"
+gke_cluster_name = "bootcampcustom-gke-cluster"
+node_pool_name   = "bootcampcustom-node-pool"
 machine_type    = "n2-standard-32"
 disk_size       = 1000
 node_count      = 2

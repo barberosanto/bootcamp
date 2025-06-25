@@ -1,7 +1,7 @@
 variable "gcp_project" {
   description = "ID do projeto no GCP"
   type        = string
-  default     = "bootcamp-453012"
+  default     = "test-bootcamp-06-2025"
 }
 
 variable "region" {
@@ -13,25 +13,25 @@ variable "region" {
 variable "vpc_name" {
   description = "Nome da VPC"
   type        = string
-  default     = "custom-vpc"
+  default     = "demo-vpc"
 }
 
 variable "subnet_name" {
   description = "Nome da Subnet"
   type        = string
-  default     = "custom-subnet"
+  default     = "demo-subnet"
 }
 
 variable "gke_cluster_name" {
   description = "Nome do cluster GKE"
   type        = string
-  default     = "custom-gke-cluster"
+  default     = "demo-gke-cluster"
 }
 
 variable "node_pool_name" {
   description = "Nome do Node Pool"
   type        = string
-  default     = "custom-node-pool"
+  default     = "demo-node-pool"
 }
 
 variable "machine_type" {
@@ -55,7 +55,7 @@ variable "node_count" {
 variable "cluster_alloy_id" {
   description = "id do cluster alloydb"
   type        = string
-  default     = "custom-cluster-alloy"
+  default     = "demo-cluster-alloy"
 }
 
 variable "cluster_alloy_cpu" {
