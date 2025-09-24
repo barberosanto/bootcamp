@@ -1,3 +1,8 @@
+module "api_enablement" {
+  source       = "./modules/api_enablement"
+  gcp_project  = var.gcp_project
+}
+
 module "vpc" {
   source       = "./modules/vpc"
   vpc_name     = var.vpc_name
@@ -21,52 +26,70 @@ module "gke" {
 }
 
 
-# resource "google_compute_global_address" "alloydb_private_ip" {
-#   project       = var.gcp_project
-#   name          = "alloydb-private-ip"
-#   purpose       = "VPC_PEERING"
-#   address_type  = "INTERNAL"
-#   prefix_length = 16
-#   network       = module.vpc.vpc_name  # Certifique-se que sua VPC está correta
-# }
+# 🔹 IP reservado para peering (necessário para AlloyDB Private Service Access)
+resource "google_compute_global_address" "alloydb_private_ip" {
+  project       = var.gcp_project
+  name          = "alloydb-private-ip"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = module.vpc.network_self_link
+}
 
-# resource "google_service_networking_connection" "alloydb_peering" {
-#   network                 = module.vpc.vpc_name
-#   service                 = "servicenetworking.googleapis.com"
-#   reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
-# }
+# 🔹 Conexão de VPC Peering com Service Networking
+resource "google_service_networking_connection" "alloydb_peering" {
+  network                 = module.vpc.network_self_link
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
+}
 
-# module "alloy-db" {
-#   source               = "GoogleCloudPlatform/alloy-db/google"
-#   version              = "~> 3.0"
-#   project_id           = var.gcp_project
-#   cluster_id           = var.cluster_alloy_id
-#   cluster_location     = var.region
-#   cluster_display_name = var.cluster_alloy_id
-#   cluster_initial_user = {
-#     user     = "root",
-#     password = "root"
-#   }
-#   network_self_link = module.vpc.vpc_name
+resource "google_alloydb_cluster" "alloydb_cluster" {
+  cluster_id   = var.cluster_alloy_id
+  project      = var.gcp_project
+  location     = var.region
+  display_name = var.cluster_alloy_id
 
-#   automated_backup_policy = null
+  initial_user {
+    user     = "root"
+    password = "root"
+  }
 
-#   primary_instance = {
-#     instance_id       = "primary-instance",
-#     instance_type     = "PRIMARY",
-#     machine_cpu_count = var.cluster_alloy_cpu,
-#     database_flags    = {},
-#     display_name      = "alloydb-primary-instance"
-#   }
+  automated_backup_policy {
+    enabled = false
+  }
 
-#   read_pool_instance = [
-#     {
-#       instance_id        = "cluster-1-rr-1"
-#       display_name       = "cluster-1-rr-1"
-#       require_connectors = false
-#       machine_cpu_count  = var.cluster_alloy_cpu
-#       ssl_mode           = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
-#     }
-#   ]
+  network_config {
+    network = "projects/${var.gcp_project}/global/networks/${var.vpc_name}"
+  }
+}
+# 🔹 Instância primária
+resource "google_alloydb_instance" "primary" {
+  depends_on     = [google_alloydb_cluster.alloydb_cluster, google_service_networking_connection.alloydb_peering]
+  instance_id   = "primary-instance"
+  cluster       = google_alloydb_cluster.alloydb_cluster.id
+  instance_type = "PRIMARY"
 
-# }
+  machine_config {
+    cpu_count = var.cluster_alloy_cpu
+  }
+
+  display_name = "alloydb-primary-instance"
+}
+
+# 🔹 Instância Read Replica (Read Pool)
+resource "google_alloydb_instance" "read_replica_1" {
+  depends_on     = [google_alloydb_instance.primary]
+  instance_id   = "cluster-1-rr-1"
+  cluster       = google_alloydb_cluster.alloydb_cluster.id
+  instance_type = "READ_POOL"
+
+  machine_config {
+    cpu_count = var.cluster_alloy_cpu
+  }
+
+  display_name = "cluster-1-rr-1"
+
+  read_pool_config {
+    node_count = 1
+  }
+}

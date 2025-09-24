@@ -1,9 +1,10 @@
-gcp_project      = "test-bootcamp-06-2025"
+gcp_project      = "bootcamp-appito"
 region          = "southamerica-east1"
 vpc_name        = "bootcampcustom-vpc"
 subnet_name     = "bootcampcustom-subnet"
 gke_cluster_name = "bootcampcustom-gke-cluster"
 node_pool_name   = "bootcampcustom-node-pool"
-machine_type    = "n2-standard-32"
+machine_type    = "n2-standard-16"
 disk_size       = 1000
 node_count      = 2
+cluster_alloy_cpu = 16
