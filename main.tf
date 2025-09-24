@@ -3,7 +3,13 @@ module "api_enablement" {
   gcp_project  = var.gcp_project
 }
 
+resource "time_sleep" "wait_for_api" {
+  depends_on = [module.api_enablement]
+  create_duration = "60s" # ajuste o tempo conforme necessário
+}
+
 module "vpc" {
+  depends_on   = [time_sleep.wait_for_api]
   source       = "./modules/vpc"
   vpc_name     = var.vpc_name
   subnet_name  = var.subnet_name
@@ -93,3 +99,5 @@ resource "google_alloydb_instance" "read_replica_1" {
     node_count = 1
   }
 }
+
+
