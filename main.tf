@@ -32,72 +32,72 @@ module "gke" {
 }
 
 
-# 🔹 IP reservado para peering (necessário para AlloyDB Private Service Access)
-resource "google_compute_global_address" "alloydb_private_ip" {
-  project       = var.gcp_project
-  name          = "alloydb-private-ip"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
-  prefix_length = 16
-  network       = module.vpc.network_self_link
-}
+# # 🔹 IP reservado para peering (necessário para AlloyDB Private Service Access)
+# resource "google_compute_global_address" "alloydb_private_ip" {
+#   project       = var.gcp_project
+#   name          = "alloydb-private-ip"
+#   purpose       = "VPC_PEERING"
+#   address_type  = "INTERNAL"
+#   prefix_length = 16
+#   network       = module.vpc.network_self_link
+# }
 
-# 🔹 Conexão de VPC Peering com Service Networking
-resource "google_service_networking_connection" "alloydb_peering" {
-  network                 = module.vpc.network_self_link
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
-}
+# # 🔹 Conexão de VPC Peering com Service Networking
+# resource "google_service_networking_connection" "alloydb_peering" {
+#   network                 = module.vpc.network_self_link
+#   service                 = "servicenetworking.googleapis.com"
+#   reserved_peering_ranges = [google_compute_global_address.alloydb_private_ip.name]
+# }
 
-resource "google_alloydb_cluster" "alloydb_cluster" {
-  cluster_id   = var.cluster_alloy_id
-  project      = var.gcp_project
-  location     = var.region
-  display_name = var.cluster_alloy_id
+# resource "google_alloydb_cluster" "alloydb_cluster" {
+#   cluster_id   = var.cluster_alloy_id
+#   project      = var.gcp_project
+#   location     = var.region
+#   display_name = var.cluster_alloy_id
 
-  initial_user {
-    user     = "root"
-    password = "root"
-  }
+#   initial_user {
+#     user     = "root"
+#     password = "root"
+#   }
 
-  automated_backup_policy {
-    enabled = false
-  }
+#   automated_backup_policy {
+#     enabled = false
+#   }
 
-  network_config {
-    network = "projects/${var.gcp_project}/global/networks/${var.vpc_name}"
-  }
-}
-# 🔹 Instância primária
-resource "google_alloydb_instance" "primary" {
-  depends_on     = [google_alloydb_cluster.alloydb_cluster, google_service_networking_connection.alloydb_peering]
-  instance_id   = "primary-instance"
-  cluster       = google_alloydb_cluster.alloydb_cluster.id
-  instance_type = "PRIMARY"
+#   network_config {
+#     network = "projects/${var.gcp_project}/global/networks/${var.vpc_name}"
+#   }
+# }
+# # 🔹 Instância primária
+# resource "google_alloydb_instance" "primary" {
+#   depends_on     = [google_alloydb_cluster.alloydb_cluster, google_service_networking_connection.alloydb_peering]
+#   instance_id   = "primary-instance"
+#   cluster       = google_alloydb_cluster.alloydb_cluster.id
+#   instance_type = "PRIMARY"
 
-  machine_config {
-    cpu_count = var.cluster_alloy_cpu
-  }
+#   machine_config {
+#     cpu_count = var.cluster_alloy_cpu
+#   }
 
-  display_name = "alloydb-primary-instance"
-}
+#   display_name = "alloydb-primary-instance"
+# }
 
-# 🔹 Instância Read Replica (Read Pool)
-resource "google_alloydb_instance" "read_replica_1" {
-  depends_on     = [google_alloydb_instance.primary]
-  instance_id   = "cluster-1-rr-1"
-  cluster       = google_alloydb_cluster.alloydb_cluster.id
-  instance_type = "READ_POOL"
+# # 🔹 Instância Read Replica (Read Pool)
+# resource "google_alloydb_instance" "read_replica_1" {
+#   depends_on     = [google_alloydb_instance.primary]
+#   instance_id   = "cluster-1-rr-1"
+#   cluster       = google_alloydb_cluster.alloydb_cluster.id
+#   instance_type = "READ_POOL"
 
-  machine_config {
-    cpu_count = var.cluster_alloy_cpu
-  }
+#   machine_config {
+#     cpu_count = var.cluster_alloy_cpu
+#   }
 
-  display_name = "cluster-1-rr-1"
+#   display_name = "cluster-1-rr-1"
 
-  read_pool_config {
-    node_count = 1
-  }
-}
+#   read_pool_config {
+#     node_count = 1
+#   }
+# }
 
 
