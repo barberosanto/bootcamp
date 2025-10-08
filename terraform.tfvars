@@ -1,4 +1,4 @@
-gcp_project      = "bootcamp-appito"
+gcp_project      = "meuprojeto"
 region          = "southamerica-east1"
 vpc_name        = "bootcampcustom-vpc"
 subnet_name     = "bootcampcustom-subnet"
